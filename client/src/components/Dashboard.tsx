@@ -16,12 +16,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const Dashboard = () => {
-  const { catalogs,removeCatalog } = useContext(CatalogContext);
+  const { catalogs,removeCatalog,primeCatalogId } = useContext(CatalogContext);
   const navigate = useNavigate();
 
   useEffect(() => {
 
-  }, [catalogs]);
+  }, [catalogs,primeCatalogId]);
+
+  const checkPrime = (catalogid: string) => {
+    return catalogid === primeCatalogId
+
+  }
 
   const convertDateJsonToLocaleString = (date: string) => {
     return new Date(date).toLocaleString();
@@ -54,7 +59,7 @@ const Dashboard = () => {
               </TableCell>
               <TableCell align="right">{catalog.vertical}</TableCell>
               <TableCell align="right">{catalog.locales? catalog.locales.join(", ") :"none"} </TableCell>
-              <TableCell align="right">{catalog.isPrime ? "true" : "false"}</TableCell>
+              <TableCell align="right">{checkPrime(catalog._id)? "true" : "false"}</TableCell>
               <TableCell align="right"> {catalog.locales?.length > 1 ? "true" : "false"}</TableCell>
               <TableCell align="right"> {catalog.indexedAt? convertDateJsonToLocaleString(catalog.indexedAt) :"N/A"}</TableCell>
 

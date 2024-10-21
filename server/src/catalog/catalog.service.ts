@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException, Query } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CatalogDto } from '../shared/dto/catalog.dto';
 import { Catalog } from './schemas/catalog.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UpdateCatalogDto } from 'src/shared/dto/update-catalog.dto';
+
 
 @Injectable()
 export class CatalogService {
@@ -35,12 +35,11 @@ export class CatalogService {
 
 
     async update(id: string, catalog: CatalogDto) {
-        console.log("updating catalog")
+
         const updated = await this.catalogModel.findByIdAndUpdate(id, catalog, { new: true });
         if (!updated) {
             throw new NotFoundException();
         }
-        console.log(updated)
         return updated;
     }
     async runIndexing(id: string) {

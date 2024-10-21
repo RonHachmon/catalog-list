@@ -1,8 +1,7 @@
 import axios from "axios";
 import { Catalog } from "../types/catalog"
+
 const BASE_URL = 'http://localhost:3000/api';
-
-
 type method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 export interface options {
@@ -14,7 +13,6 @@ export interface options {
 }
 
 export const getCatalogList = async (catalogListId: string) => {
-    console.log("getting catalog list")
     const options: options = {
         method: 'GET',
         url: BASE_URL + '/catalog-list',
@@ -35,9 +33,8 @@ export const addCatalogToList = async (catalogListId: string|null,catalog: Catal
     };
 
     try {
-    const { data } = await axios.request(options);
-    console.log(data);
-    return data;
+        const { data } = await axios.request(options);
+        return data;
     } catch (error) {
         console.log(error);
     }
@@ -51,7 +48,8 @@ export const update = async (catalogListId: string|null,catalog: Catalog) => {
          catalogDto: catalog,
          isPrime:catalog.isPrime,
          catalogId:catalog._id
-        } ;
+        };
+
     const options: options = {
         method: 'PUT',
         url: BASE_URL + '/catalog-list/update',
@@ -59,9 +57,8 @@ export const update = async (catalogListId: string|null,catalog: Catalog) => {
     };
 
     try {
-    const { data } = await axios.request(options);
-    console.log(data);
-    return data;
+        const { data } = await axios.request(options);
+        return data;
     } catch (error) {
         console.log(error);
     }

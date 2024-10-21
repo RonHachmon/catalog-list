@@ -9,7 +9,6 @@ import { CatalogService } from '../catalog/catalog.service';
   imports: [
     CatalogModule,
     MongooseModule.forFeature([{ name: CatalogList.name, schema: CatalogListSchema }])
-
   ],
   controllers: [CatalogListController],
   providers: [CatalogListService],

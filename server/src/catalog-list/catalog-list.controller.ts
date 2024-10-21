@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put,ValidationPipe  } from '@nestjs/common';
 import { CatalogListService } from './catalog-list.service';
 import { AddCatalogToListDto } from '../shared/dto/add-catalog.dto';
 import { DeleteCatalogFromListDto } from '../shared/dto/delete-catalog-from-list.dto';
@@ -10,9 +10,7 @@ export class CatalogListController {
   constructor(private readonly catalogListService: CatalogListService) {}
 
   @Post()
-  create(@Body() addCatalogToListDto: AddCatalogToListDto) {
-    console.log("adding ne catalog to list")
-    console.log(addCatalogToListDto)
+  create(@Body(ValidationPipe) addCatalogToListDto: AddCatalogToListDto) {
     return this.catalogListService.addCatalogToList(addCatalogToListDto);
   }
 
@@ -22,14 +20,12 @@ export class CatalogListController {
   }
 
   @Delete()
-  delete(@Body() deleteCatalogFromListDto: DeleteCatalogFromListDto) {
-    console.log("deleting catalog from list")
+  delete(@Body(ValidationPipe) deleteCatalogFromListDto: DeleteCatalogFromListDto) {
     return this.catalogListService.deleteCatalogFromList(deleteCatalogFromListDto);
   }
 
   @Put('/update')
-  setPrime(@Body() updateCatalogDto: UpdateCatalogDto) {
-    console.log("update catalog")
+  setPrime(@Body(ValidationPipe) updateCatalogDto: UpdateCatalogDto) {
     return this.catalogListService.updateCatalogInList(updateCatalogDto);
   }
 

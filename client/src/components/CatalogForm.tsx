@@ -16,7 +16,7 @@ const CatalogForm = () => {
 
   
   const [isCreate, setIsCreate] = useState<boolean>(true);
-  const { addCatalog,catalogs,updateCatalog } = useContext(CatalogContext);
+  const { addCatalog,catalogs,updateCatalog,primeCatalogId } = useContext(CatalogContext);
 
   const [catalog, setCatalog] = useState<Partial<Catalog>>({
     isPrime: false,
@@ -30,44 +30,34 @@ const CatalogForm = () => {
 
 
 
-  useEffect(() =>
+  const initilizeCatalog = () => {
+        
+    if(catalogId)
     {
-    
-    if(catalogId){
       setIsCreate(false);
       const catalog = catalogs.find((catalog) => catalog._id === catalogId);
-      if(catalog){
-        setCatalog(catalog);
+      const isPrime = catalogId === primeCatalogId
+
+      if(catalog)
+      {
+          setCatalog({...catalog,isPrime});
       }
-    }    
+    }
+  }   
+  
+  
+
+  useEffect(() =>
+    {
+      initilizeCatalog(); 
   },[])
 
 
-  const validateCatalog = (partialCatalog: Partial<Catalog>) => {
-    if (!partialCatalog.name) {
-      return false;
-    }
-
-    if (!partialCatalog.vertical) {
-      return false;
-    }
-
-    return true;
-    
-  }
 
 
   const handleSubmit = () => {
-    console.log("submit");
-    if(isCreate)
-    {
-      addCatalog(catalog as Catalog);
-    }
-    else
-    {
-      updateCatalog(catalog as Catalog);
-    }
-    
+    const filledCatalog =catalog as Catalog
+    isCreate ? addCatalog(filledCatalog) : updateCatalog(filledCatalog);
     navigate('/');
   };
   const handleIsPrimeClicked = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,15 +76,16 @@ const CatalogForm = () => {
 
     if(name.length > 0 && !validator.isAlpha(name)) {
       setNameError("Name can only contain letters");
-      return
+      return false;
     }
     if (nameAlreadyExists(name))
     {
       setNameError("Name already exists");
-      return
+      return false;
     } 
 
     setNameError(undefined);
+    return true;
 
 
   }
@@ -109,16 +100,34 @@ const CatalogForm = () => {
   }
 
   const catalogNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCatalog({
+    const newName = e.target.value;
+    if(validatName(newName)){
+      setCatalog({
         ...catalog,
-        name: e.target.value
+        name: newName
     })
-    validatName(e.target.value);
+      
+    }
+
+    
+  }
+  const addedLocal = () => {
+    const newLocal = currentLocal?.trim()
+    if ( newLocal!= '')
+    {
+      setCatalog({
+        ...catalog,
+        locales: [...(catalog.locales ?? []), currentLocal?.trim() ?? '']
+      })
+      setCurrentLocal(undefined)
+    }
   }
   const catalogVerticalChanged = (e:any) => {
+    const newVertical = e.target.value;
+
     setCatalog({
         ...catalog,
-        vertical: e.target.value
+        vertical: newVertical
     })
   }
   const deleteLocal = (createdLocal: string) => {
@@ -128,6 +137,17 @@ const CatalogForm = () => {
         ...catalog,
         locales: newLocal
     })
+  }
+  const isValidCategory = () => {
+    if(catalog.name == null ||  catalog.name == '' || nameError !== undefined){
+      return false;
+      
+    }
+    if(catalog.vertical == null){
+      return false;
+    }
+    return true;
+    
   }
 
 
@@ -177,14 +197,7 @@ const CatalogForm = () => {
           onChange={(e) => setCurrentLocal(e.target.value)}
 
         />
-        <Button onClick={() => {
-          setCatalog({
-            ...catalog,
-            locales: [...(catalog.locales ?? []), currentLocal?.trim() ?? '']
-          })
-
-          setCurrentLocal(undefined)
-        }}  variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={() => addedLocal} >
           Add Local
         </Button>
         </Box>
@@ -222,14 +235,14 @@ const CatalogForm = () => {
         <Typography sx={{color: 'black'}}>{catalog?.indexedAt? new Date(catalog?.indexedAt).toLocaleString() : 'N/A'}
         </Typography>
       </Box>
-      <Button sx={{fontSize: '0.7rem', padding: '0.1rem'}} onClick={runIndexing} variant="contained" color="primary">
+      <Button onClick={runIndexing} variant="contained" color="primary">
         Run Indexing
       </Button>
       </Box>
       }
 
       {/* submition button */}
-      <Button onClick={handleSubmit}  variant="contained" color="primary">
+      <Button disabled={!isValidCategory()} onClick={handleSubmit}  variant="contained" color="primary">
         {isCreate ? "Create Catalog" : "Update Catalog"}
       </Button>
       </Box>

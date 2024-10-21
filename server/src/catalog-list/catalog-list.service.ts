@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable,NotFoundException  } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CatalogList, CatalogListDocument } from './schemas/catalogList.schema';
@@ -32,31 +32,23 @@ export class CatalogListService {
 
   async addCatalogToList(addCatalogToListDto: AddCatalogToListDto): Promise<CatalogListDocument | null> {
     let catalogList: CatalogListDocument | null =null
-    console.log("addCatalogToListDto")
-    console.log(addCatalogToListDto)
     if (!addCatalogToListDto.catalogListId) {
       catalogList = await this.create();
-      console.log("created")
     }
     else
     {
       catalogList = await this.findOne(addCatalogToListDto.catalogListId);
-      console.log("n")
     }
     
     if (catalogList===null) {
-      console.log(catalogList)
-      throw new Error('Catalog list not found');
+      throw new NotFoundException('catalog list id not Found')
     }
     const nameExists = catalogList.catalogs.find((catalog) => catalog.name === addCatalogToListDto.catalogDto.name);
     if (nameExists) {
-      throw new Error('Catalog name already exists');
+      throw new BadRequestException('name already used')
     }
 
-
-    console.log("my dto:"+ addCatalogToListDto.catalogDto)
     const catalog = await this.catalogService.create(addCatalogToListDto.catalogDto);
-    console.log("created catalog"+ catalog)
     if(addCatalogToListDto.isPrime) {
       catalogList.primeCatalogId = catalog._id;
     }
@@ -69,17 +61,17 @@ export class CatalogListService {
   async deleteCatalogFromList(deleteCatalogFromListDto: DeleteCatalogFromListDto): Promise<CatalogListDocument | null> {
     const catalogList = await this.findOne(deleteCatalogFromListDto.catalogListId);
     if (!catalogList) {
-      return null;
+      throw new NotFoundException('catalog list id not Found')
     }
     const catalogToDelete =await this.catalogService.findOne(deleteCatalogFromListDto.catalogId);
 
     if (!catalogToDelete) {
-      return null;
+      throw new NotFoundException('catalog id not Found')
     }
 
     const index = catalogList.catalogs.findIndex((catalog) => catalog.name === catalogToDelete.name);
     if (index === -1) {
-      throw new Error('Catalog not found in list');
+      throw new BadRequestException("catalog isn't not part of catalog lost" )
     }
 
     catalogList.catalogs.splice(index, 1);
@@ -90,17 +82,14 @@ export class CatalogListService {
 
 
   async updateCatalogInList(updateCatalogInListDto: UpdateCatalogDto) {
-    console.log((updateCatalogInListDto.catalogListId))
     const catalogList = await this.findOne(updateCatalogInListDto.catalogListId);
     if (!catalogList) {
-      console.log("catalog list not found")
-      return null;
+      throw new NotFoundException('User Role Not Found')
     }
-    console.log("updateCatalogInListDto.catalogDto")
-    console.log(updateCatalogInListDto.catalogDto)
     const updatedCatalog = await this.catalogService.update(updateCatalogInListDto.catalogId, updateCatalogInListDto.catalogDto);
 
-    if (updateCatalogInListDto.isPrime && catalogList.primeCatalogId.toString() !== updateCatalogInListDto.catalogId) {
+    if (updateCatalogInListDto.isPrime)
+      if (catalogList.primeCatalogId===null || catalogList.primeCatalogId.toString() !== updateCatalogInListDto.catalogId) {
       this.updatePrimeCatalog(updateCatalogInListDto.catalogListId, catalogList);
       
     }
@@ -111,26 +100,6 @@ export class CatalogListService {
     await catalogList.save();
 
   }
-
-
-  // async setPrime(setPrimeDto: SetPrimeDto): Promise<CatalogListDocument | null> {
-  //   const catalogList = await this.findOne(setPrimeDto.catalogListId);
-  //   const catalog = await this.catalogService.findOne(setPrimeDto.catalogId);
-  //   if (!catalogList || !catalog) {
-  //     return null;
-  //   }
-
-  //   const index = catalogList.catalogs.findIndex((catalog) => catalog.name === catalog.name);
-  //   // catalog not in list
-  //   if (index === -1) {
-  //     return null;
-  //   }
-
-  //   catalogList.primeCatalogId =new Types.ObjectId(setPrimeDto.catalogId);
-
-  //   await catalogList.save();
-  //   return catalogList;
-  // }
 
 
 }
