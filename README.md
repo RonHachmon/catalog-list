@@ -1,30 +1,44 @@
 # Catalog Managment System
 
+
 ## Overview
-The bisbis10 restaurant management system is a backend service designed to handle various operations related to restaurants, their dishes, and ratings. The system aims to provide a comprehensive platform for managing restaurant data, including details about the restaurants, their cuisines, dishes, and customer ratings.
+The catalog managment system restaurant management system is a wep app designed to handle catalog and visualize the data of your catalog.
 
-## Functionality
-The system provides the following APIs:
+## 🛠️ Tech Stack
 
-- **Restaurants API**: Manages restaurant data.
-- **Ratings API**: Manages customer ratings for restaurants.
-- **Dishes API**: Manages the dishes offered by each restaurant.
+**Frontend:**
+- TypeScript
+- React
 
-## Technical Aspects
-The system is built using Java Spring Boot, leveraging its robust framework for creating RESTful APIs.
+**Backend:**
+- NestJS
+- TypeScript
+- MongoDB
+
+## 🚀 How to Run
+
+1. Navigate to the root directory of the repository.
+
+2. Run the following command to start the application using Docker Compose:
+
+   ```bash
+   docker-compose up
+3. visit localhost:5173
 
 ## APIs
 
-### Restaurants APIs
+### Catalog APIs
 
-| API Description           | Endpoint                | Request Body                                             | Response Status | Response Body                                                                                           |
-|---------------------------|-------------------------|----------------------------------------------------------|-----------------|--------------------------------------------------------------------------------------------------------|
-| Get all restaurants       | GET /restaurants        |                                                          | 200 OK          | [{"id": "1","name": "Taizu","averageRating" : 4.83,"isKosher" : false,"cuisines": ["Asian","Mexican","Indian"]}] |
-| Get restaurants by cuisine| GET /restaurants?cuisine={cuisine} |                                                         | 200 OK          | [{"id": "1","name": "Taizu","averageRating" : 4.83,"isKosher" : false,"cuisines": ["Asian","Mexican","Indian"]}] |
-| Get restaurant            | GET /restaurants/{id}      |                                                          | 200 OK          | {"id": "1","name": "Taizu","averageRating" : 4.83,"isKosher" : false,"cuisines": ["Asian","Mexican","Indian"],"dishes": [{"id": "1","name": "Noodles","description": "Amazing one","price": 59}]} |
-| Add a restaurant          | POST /restaurants       | {"name": "Taizu","isKosher": false,"cuisines": ["Asian","Mexican","Indian"]} | 201 CREATED     |                                                                                                        |
-| Update a restaurant       | PUT /restaurants/{id}     | {"cuisines": ["Asian"]}                                 | 200 OK          |                                                                                                        |
-| Delete a restaurant       | DELETE /restaurants/{id}    |                                                          | 204 No Content  |                                                                                                        |
+| API Description           | Endpoint                      | Request Body                                             | Response Status | Response Body                                                                                           |
+|---------------------------|-------------------------------|----------------------------------------------------------|-----------------|--------------------------------------------------------------------------------------------------------|
+| Get list of catalogs       | GET /api/catalog-list/:catalogListId        |                                                          | 200 OK          | [{"id": "1","name": "Taizu","averageRating" : 4.83,"isKosher" : false,"cuisines": ["Asian","Mexican","Indian"]}] |
+| Add catalog to catlog list| POST /api/catalog-list |                                                         | 200 OK          | [{"id": "1","name": "Taizu","averageRating" : 4.83,"isKosher" : false,"cuisines": ["Asian","Mexican","Indian"]}] |
+| Update a catalog       | PUT /api/catalog-list/update     |  {"catalogDto": {"name": "terminalX","vertical": "home", "local": ["en", "fr"],"indexedAt": null} "isPrime": true,"catalogId":"1","catalogListId":"2",                          | 200 OK          |                                                                                                        |
+| Delete a catalog       | DELETE /api/catalog-list    |           "catalogListId": "1", "catalogId: "2"                                               | 204 No Content  |                                                                                                        |
+
+
+
+
 
 
 ### Ratings APIs
