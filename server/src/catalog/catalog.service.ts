@@ -15,8 +15,6 @@ export class CatalogService {
         return catalog;
     }
     async create(catalog:CatalogDto) {
-        console.log("creating catalog")
-        console.log(catalog)
         let newCatalog = new this.catalogModel({
             name: catalog.name,
             vertical: catalog.vertical,
