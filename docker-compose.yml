@@ -12,13 +12,13 @@ services:
       MONGO_INITDB_ROOT_USERNAME: syte
       MONGO_INITDB_ROOT_PASSWORD: password
 
-  # client:
-  #   build: 
-  #     context: ./client
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "5173:5173"
-  #   restart: on-failure
+  client:
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    restart: on-failure
 
   api:
     build: 
