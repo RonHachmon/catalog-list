@@ -2,7 +2,7 @@
 
 
 ## Overview
-The catalog managment system is a web app designed to handle catalog and visualize the data of your catalog.
+The catalog managment system is a web app designed to handle set of catalog and visualize the data of your catalog's.
 
 ## 🛠️ Tech Stack
 
